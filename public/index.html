@@ -1,12 +1,181 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
-  <body>
-    <div id="root" class="container"></div>
-    <script type="text/javascript" src="bundle/bundle.js"></script>
-  </body>
-</html>
+<meta charset="utf-8">
+<style>
+.axis text {
+  font: 10px sans-serif;
+}
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.path-line {
+  fill: none;
+  stroke: yellow;
+  stroke-width: 1.5px;
+}
+svg {
+  background: #f0f0f0;
+}
+</style>
+<body>
+<h2>Stacked Bar Chart - d3.v4 implementation</h2>
+<div id='stacked-bar2'style="margin-left: 50px" ></div>
+<div id='stacked-bar'style="margin-left: 50px" ></div>
+<!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+<script src="bundle/bundle.js"></script>
+<script src="d3.v4.min.js"></script>
+<script>
+var initStackedBarChart = {
+	draw: function(config) {
+		me = this,
+		domEle = config.element,
+		stackKey = config.key,
+		data = config.data,
+		margin = {top: 20, right: 20, bottom: 30, left: 50},
+		width = 960 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom,
+		xScale = d3.scaleLinear().rangeRound([0, width]),
+		yScale = d3.scaleBand().rangeRound([height, 0]).padding(0.1),
+		color = d3.scaleOrdinal(d3.schemeCategory20),
+		xAxis = d3.axisBottom(xScale),
+		yAxis =  d3.axisLeft(yScale),
+		svg = d3.select("#"+domEle).append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		var stack = d3.stack()
+			.keys(stackKey)
+			.offset(d3.stackOffsetNone);
+	
+		var layers= stack(data);
+			yScale.domain(data.map(function(d) { return d.date; }));
+			xScale.domain([0, 999 ]).nice();
+
+		var layer = svg.selectAll(".layer")
+			.data(layers)
+			.enter().append("g")
+			.attr("class", "layer")
+			.style("fill", function(d, i) { return color(i); });
+
+		  layer.selectAll("rect")
+			  .data(function(d) { return d; })
+			.enter().append("rect")
+			  .attr("y", function(d) { return yScale(d.data.date); })
+			  .attr("x", function(d) { return xScale(d[0]); })
+			  .attr("height", yScale.bandwidth())
+			  .attr("width", function(d) { return xScale(d[1]) - xScale(d[0]) });
+    
+			svg.append("g")
+			.attr("class", "axis axis--x")
+			.attr("transform", "translate(0," + (height+5) + ")")
+			.call(xAxis);
+
+			svg.append("g")
+			.attr("class", "axis axis--y")
+			.attr("transform", "translate(0,0)")
+			.call(yAxis);							
+	}
+}
+// d3.json("api/getData", function(error, data) {
+
+
+
+// var tempData=[];
+// var key={};
+// data.forEach(function(el){
+//     console.log(el.values)
+
+         
+//           var val={};
+//           val['date']= el.categorie;
+//           el.values.forEach(function(obj){  
+//             val[obj.rate]=obj.value;
+//             key[obj.rate]=1;
+        
+        
+//         });
+          
+
+//          Array.prototype.splice.call(tempData,tempData.length,0,val);
+// }) ;
+// var categoriekey=Object.keys(key);
+
+
+// initStackedBarChart.draw({
+// data: tempData,
+// key: categoriekey,
+// element: 'stacked-bar'
+// });
+
+
+
+// });
+
+
+
+
+d3.json("api/getData", function(error, res) {
+
+  var data=  res.aggregations.audits_over_time.buckets;
+
+var tempData=[];
+var key={};
+data.forEach(function(el){
+    console.log(el.values)
+
+          //tempData.splice(tempData.length,0,el.values) ;
+          var val={};
+          val['date']= new Date(el.key).toISOString();
+          el.by_de.buckets.forEach(function(obj2){  
+
+            if(obj2.key=='DE_ADDRESS'){
+
+                obj2.by_user.buckets.forEach(
+                    function(obj){
+            val[obj.key]=obj.doc_count *5;
+            key[obj.key]=1;
+                    }
+                );
+             
+
+
+
+            }
+        
+        
+        });
+          //val.unshift(0);
+          //val.unshift(tempData.length);
+
+         Array.prototype.splice.call(tempData,tempData.length,0,val);
+}) ;
+var categoriekey=Object.keys(key);
+
+
+initStackedBarChart.draw({
+data: tempData,
+key: categoriekey,
+element: 'stacked-bar2'
+});
+
+
+
+});
+
+// var data = [{"date":"TEXT","01":59,"03":33,"04":23},{"date":"DIFF","02":88,"03":1,"04":30},{"date":"ETCH","02":78,"03":81,"04":70},{"date":"ANNL","01":53,"03":12,"05":18},{"date":"FCOT","01":84,"02":27,"05":16},{"date":"PRNT","01A":72,"01A":14,"04B":42}];
+
+// //var data = [{"date":"TEXT","TEXT01":59,"TEXT03":33,"TEXT04":23},{"date":"DIFF","DIFF02":88,"DIFF03":1,"DIFF04":30},{"date":"ETCH","ETCH02":78,"ETCH03":81,"ETCH04":70},{"date":"ANNL","ANNL01":53,"ANNL03":12,"ANNL05":18},{"date":"FCOT","FCOT01":84,"FCOT02":27,"FCOT05":16},{"date":"PRNT","PRNT01A":72,"PRNT01A":14,"PRNT04B":42}];
+// //var key = ["TEXT01","TEXT02", "TEXT03", "TEXT04","DIFF01","DIFF02", "DIFF03", "DIFF04","DIFF05","ETCH01","ETCH02", "ETCH03", "ETCH04", "ETCH05","ANNL01","ANNL02", "ANNL03", "ANNL04", "ANNL05","FCOT01","FCOT02", "FCOT03", "FCOT04", "FCOT05", "PRNT01A", "PRNT01B", "PRNT02A", "PRNT02B", "PRNT01A", "PRNT03B", "PRNT04A", "PRNT04B"];
+  
+// var key = ["01","02", "03", "04","05","01A", "01B", "02A", "02B", "01A", "03B", "04A", "04B"];  
+  
+// initStackedBarChart.draw({
+// 	data: data,
+// 	key: key,
+// 	element: 'stacked-bar'
+// });
+</script>
