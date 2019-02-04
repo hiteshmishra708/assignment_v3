@@ -1,9 +1,5 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
-var ReactRouter = require('react-router');
 var $ = require ('jquery');
-
-var { Router, Route, IndexRoute, IndexLink, Link } = ReactRouter;
 
 /****************************  RootComp  ******************************/
 module.exports.RootComp = React.createClass({
@@ -28,10 +24,10 @@ module.exports.RootComp = React.createClass({
   },
 
   render: function() {
-  console.log(this.state.responseData);
+    console.log(this.state.responseData);
     return (
       <div>
-        <h1> Grocery Farm</h1>
+        <h1> Assignment </h1>
         {this.props.children}
       </div>
     )

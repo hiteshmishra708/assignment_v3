@@ -1,7 +1,7 @@
 {
-  "name": "GroceryFarmApplication",
+  "name": "Assignment",
   "version": "1.0.0",
-  "description": "Grocery Farm Application using Node, Express, Mongo & React",
+  "description": "Assignment using Node, Express, jQuery",
   "main": "app.js",
   "scripts": {
     "bbl": "webpack ./public/main.js ./public/bundle.js",
@@ -10,8 +10,7 @@
     "rebundle": "webpack"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Hitesh Mishra",
   "dependencies": {
     "body-parser": "^1.15.2",
     "bootstrap": "4.1.2",
@@ -19,7 +18,6 @@
     "express": "^4.14.0",
     "express-session": "^1.14.1",
     "jquery": "^3.1.1",
-    "mongoose": "^4.6.2",
     "react": "^0.14.8",
     "react-addons-linked-state-mixin": "^15.3.2",
     "react-bootstrap": "^0.30.5",

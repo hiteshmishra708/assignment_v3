@@ -25772,18 +25772,9 @@
 	'use strict';
 
 	var React = __webpack_require__(5);
-	var ReactDOM = __webpack_require__(162);
-	var ReactRouter = __webpack_require__(163);
 	var $ = __webpack_require__(227);
 
-	var Router = ReactRouter.Router,
-	    Route = ReactRouter.Route,
-	    IndexRoute = ReactRouter.IndexRoute,
-	    IndexLink = ReactRouter.IndexLink,
-	    Link = ReactRouter.Link;
-
 	/****************************  RootComp  ******************************/
-
 	module.exports.RootComp = React.createClass({
 	  displayName: 'RootComp',
 
@@ -25815,7 +25806,7 @@
 	      React.createElement(
 	        'h1',
 	        null,
-	        ' Grocery Farm'
+	        ' Assignment '
 	      ),
 	      '\xA0\xA0\xA0\xA0\xA0\xA0\xA0\xA0',
 	      this.props.children,
